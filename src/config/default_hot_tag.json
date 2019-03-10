@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "path": "ios",
+    "name": "IOS",
+    "checked": true
+  },
+  {
+    "id": 2,
+    "path": "react-native",
+    "name": "React-Native",
+    "checked": true
+  },
+  {
+    "id": 3,
+    "path": "android",
+    "name": "Android",
+    "checked": false
+  },
+  {
+    "id": 5,
+    "path": "javaScript",
+    "name": "Javascript",
+    "checked": true
+  },
+  {
+    "id": 23,
+    "path": "node.js",
+    "name": "Node.js",
+    "checked": true
+  }
+]
