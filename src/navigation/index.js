@@ -153,5 +153,5 @@ export const AppStackNavigator = createStackNavigator({
     })
   }
 }, {
-  initialRouteName: 'Search'
+  initialRouteName: 'AppBottomTabNavigator'
 });

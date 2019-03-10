@@ -4,6 +4,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import api from '../api';
 
 export default class HotTag extends React.Component {
+  isCancelSearch = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -19,10 +21,10 @@ export default class HotTag extends React.Component {
 
   // normal 状态下才会执行
   searchData = async () => {
+    const { props, state } = this;
     this.setState({
       isLoading: true
     });
-    const { props } = this;
     const actionType = props.actionType;
     // 获取收藏的列表
     const hotCollection = await AsyncStorage.getItem('hotCollection');
@@ -36,10 +38,19 @@ export default class HotTag extends React.Component {
         // normal 需要获取仓库数据
         const url = `http://api.github.com/search/repositories?q=${props.path}&sort=starts`;
         const result = await api.selectHot(url);
-        this.setState({
-          isLoading: false,
-          searchDataResult: result.items
-        });
+        console.log(result);
+        // 是否取消搜索
+        if (this.isCancelSearch) {
+          this.setState({
+            isLoading: false
+          });
+        } else {
+          this.setState({
+            isLoading: false,
+            searchDataResult: result.items
+          });
+        }
+        this.isCancelSearch = false;
         break;
       case 'favorite':
         this.setState({
@@ -47,6 +58,19 @@ export default class HotTag extends React.Component {
         });
         break;
     }
+    // 通知父級搜索完成
+    props.searchDataComplete && props.searchDataComplete();
+  };
+
+  /**
+   * 取消搜索
+   *
+   */
+  cancelSearch = () => {
+    this.setState({
+      isLoading: false
+    });
+    this.isCancelSearch = true;
   };
 
   // 添加收藏的方法

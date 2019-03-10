@@ -1,13 +1,22 @@
 import React from 'react';
 import { NavigationEvents } from 'react-navigation';
-import { View, Text, StyleSheet, TextInput, Button, AsyncStorage, TouchableOpacity, DeviceEventEmitter } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Button,
+  AsyncStorage,
+  TouchableOpacity,
+  DeviceEventEmitter
+} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Toast from 'react-native-easy-toast';
 import HotTag from '../component/HotTag';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 export default class Hot extends React.Component {
-  static navigationOptions = ({navigation}) => ({
+  static navigationOptions = ({ navigation }) => ({
     headerTitle: '热门',
     headerTitleStyle: {
       flex: 1,
@@ -38,15 +47,19 @@ export default class Hot extends React.Component {
       tabBarCallBack: this.initData
     });
 
+    await this.initHotTag();
+
+    this.listener = DeviceEventEmitter.addListener('showToast', (text) => {
+      this.refs['toast'].show(text, 500);
+    });
+  };
+
+  initHotTag = async () => {
     const storageRepositoryTag = await AsyncStorage.getItem('hotTag');
     this.setState({
       HotTag: storageRepositoryTag !== null
         ? JSON.parse(storageRepositoryTag)
         : require('../config/default_hot_tag')
-    });
-
-    this.listener = DeviceEventEmitter.addListener('showToast', (text) => {
-      this.refs['toast'].show(text, 500);
     });
   };
 
@@ -83,6 +96,7 @@ export default class Hot extends React.Component {
           onDidFocus={() => {
             if (this.refs['hotTag']) {
               this.refs['hotTag'].searchData();
+              this.initHotTag();
             }
           }}
         />
