@@ -1,0 +1,38 @@
+{
+  "default": "#06f",
+  "list": [
+    {
+      "name": "Primary",
+      "value": "#06f"
+    },
+    {
+      "name": "Red",
+      "value": "#f60"
+    },
+    {
+      "name": "Teal",
+      "value": "#80cbc4"
+    },
+    {
+      "name": "Cyan",
+      "value": "#26c6da"
+    },
+    {
+      "name": "Green",
+      "value": "#66bb6a"
+    },
+    {
+      "name": "Lime",
+      "value": "#afb42b"
+    },
+    {
+      "name": "Orange",
+      "value": "#ff5722"
+    },
+    {
+      "name": "Grey",
+      "value": "#424242"
+    }
+  ]
+
+}

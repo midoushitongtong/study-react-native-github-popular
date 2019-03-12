@@ -11,10 +11,11 @@ import {
 } from 'react-native';
 import Parallax from '../component/Parallax';
 import ViewUtil from '../util/ViewUtil';
+import ThemeConnect from '../core/ThemeConnect';
 
-export default class About extends React.Component {
+export default class About extends ThemeConnect {
   render = () => {
-    const { props } = this;
+    const { props, state } = this;
     return (
       <Parallax
         navigation={props.navigation}
@@ -31,12 +32,14 @@ export default class About extends React.Component {
         }}
         content={(
           <View>
-            {ViewUtil.renderListItem(
-              () => props.navigation.push('AboutAuthor'),
-              'person',
-              '关于作者',
-              'chevron-right'
-            )}
+            {ViewUtil.renderListItem({
+              callback: () => props.navigation.push('AboutAuthor'),
+              text: '关于作者',
+              leftIconName: 'person',
+              leftIconStyle: { color: state.theme },
+              rightIconName: 'chevron-right',
+              rightIconStyle: { color: state.theme }
+            })}
           </View>
         )}
       />

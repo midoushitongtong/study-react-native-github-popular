@@ -14,8 +14,9 @@ import {
 import SortableList from 'react-native-sortable-list';
 import Checkbox from 'react-native-check-box';
 import Feather from 'react-native-vector-icons/Feather';
+import ThemeConnect from '../core/ThemeConnect';
 
-export default class CustomTag extends React.Component {
+export default class CustomTag extends ThemeConnect {
   static navigationOptions = ({ navigation }) => {
     return {
       headerLeft: (
@@ -136,6 +137,49 @@ export default class CustomTag extends React.Component {
     props.navigation.pop();
   };
 
+  _renderRow = ({ data, index }) => {
+    const { state } = this;
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: 15,
+          borderBottomStyle: 'solid',
+          borderBottomWidth: 1,
+          borderBottomColor: '#ddd',
+          backgroundColor: '#f1f1f1'
+        }}
+      >
+        <View style={{ flexDirection: 'row' }}>
+          <Feather
+            size={20}
+            name="align-justify"
+            color={state.theme}
+            style={{ marginRight: 11 }}
+          />
+          <Text style={{ color: data.checked ? '#666' : '#666' }}>{data.name}</Text>
+        </View>
+        <Checkbox
+          style={{ padding: 10 }}
+          checkedCheckBoxColor={state.theme}
+          isChecked={data.checked}
+          onClick={() => {
+            // 更新当前 item 选中状态
+            const newTag = state.tag;
+            const currentTagIndex = newTag.findIndex(item => item.id === data.id);
+            newTag[currentTagIndex].checked = !newTag[currentTagIndex].checked;
+            this.setState({
+              changeDataStatus: true,
+              tag: newTag
+            });
+          }}
+        />
+      </View>
+    );
+  };
+
   render = () => {
     const { state } = this;
     return (
@@ -158,49 +202,6 @@ export default class CustomTag extends React.Component {
             )
             : null
         }
-      </View>
-    );
-  };
-
-  _renderRow = ({ data, index }) => {
-    const { state } = this;
-    return (
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: 15,
-          borderBottomStyle: 'solid',
-          borderBottomWidth: 1,
-          borderBottomColor: '#ddd',
-          backgroundColor: '#f1f1f1'
-        }}
-      >
-        <View style={{ flexDirection: 'row' }}>
-          <Feather
-            size={20}
-            name="align-justify"
-            color="#06f"
-            style={{ marginRight: 5 }}
-          />
-          <Text style={{ color: data.checked ? '#06f' : '#666' }}>{data.name}</Text>
-        </View>
-        <Checkbox
-          style={{ padding: 10 }}
-          checkedCheckBoxColor="#06f"
-          isChecked={data.checked}
-          onClick={() => {
-            // 更新当前 item 选中状态
-            const newTag = state.tag;
-            const currentTagIndex = newTag.findIndex(item => item.id === data.id);
-            newTag[currentTagIndex].checked = !newTag[currentTagIndex].checked;
-            this.setState({
-              changeDataStatus: true,
-              tag: newTag
-            });
-          }}
-        />
       </View>
     );
   };

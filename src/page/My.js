@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Button, ScrollView, TouchableHighlight, StyleSheet, Text } from 'react-native';
-import Feather from 'react-native-vector-icons/Feather';
+import { View, Button, ScrollView, TouchableHighlight, StyleSheet, Text, DeviceEventEmitter } from 'react-native';
+import CustomTheme from './CustomTheme';
 import ViewUtil from '../util/ViewUtil';
+import ThemeConnect from '../core/ThemeConnect';
 
-export default class My extends React.Component {
+export default class My extends ThemeConnect {
   static navigationOptions = () => ({
     headerTitle: '我的',
     headerTitleStyle: {
@@ -15,6 +16,7 @@ export default class My extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      customThemeVisible: false,
       menuList: {
         customHotTag: '自定义热门仓库标签',
         customTrendingTag: '自定义趋势仓库标签'
@@ -33,60 +35,95 @@ export default class My extends React.Component {
   };
 
   render = () => {
+    const { props, state } = this;
     return (
-      <View style={styles.container}>
-        <ScrollView>
-          {ViewUtil.renderListItem(
-            () => this.handlerSettingItemClick('About'),
-            'code',
-            'GitHub Popular',
-            'chevron-right',
-            { paddingVertical: 35 },
-            { fontSize: 50 },
-            { fontSize: 15 }
-          )}
-          {/* trending */}
-          <Text style={styles.menuTitle}>趋势管理</Text>
-          {ViewUtil.renderListItem(
-            () => this.handlerSettingItemClick('CustomTag', { actionType: 'trending' }),
-            'list',
-            '自定义趋势标签',
-            'chevron-right'
-          )}
-          {ViewUtil.renderListItem(
-            () => this.handlerSettingItemClick('CustomDeleteTag', { actionType: 'trending' }),
-            'delete',
-            '移除趋势标签',
-            'chevron-right'
-          )}
+      state.theme
+        ? (
+          <View style={styles.container}>
+            <ScrollView>
+              {ViewUtil.renderListItem({
+                callback: () => this.handlerSettingItemClick('About'),
+                text: 'GitHub Popular',
+                leftIconName: 'code',
+                rightIconName: 'chevron-right',
+                containerStyle: { paddingVertical: 35 },
+                leftTextStyle: { fontSize: 15 },
+                leftIconStyle: { fontSize: 50, color: state.theme },
+                rightIconStyle: { color: state.theme }
+              })}
 
-          {/* popular */}
-          <Text style={styles.menuTitle}>热门管理</Text>
-          {ViewUtil.renderListItem(() => this.handlerSettingItemClick('CustomTag', { actionType: 'hot' }),
-            'list',
-            '自定义热门标签',
-            'chevron-right'
-          )}
-          {ViewUtil.renderListItem(() => this.handlerSettingItemClick('CustomDeleteTag', { actionType: 'hot' }),
-            'delete',
-            '移除热门标签',
-            'chevron-right'
-          )}
+              {/* popular */}
+              <Text style={styles.menuTitle}>热门管理</Text>
+              {ViewUtil.renderListItem({
+                callback: () => this.handlerSettingItemClick('CustomTag', { actionType: 'hot' }),
+                text: '自定义热门标签',
+                leftIconName: 'list',
+                rightIconName: 'chevron-right',
+                leftIconStyle: { color: state.theme },
+                rightIconStyle: { color: state.theme }
+              })}
+              {ViewUtil.renderListItem({
+                callback: () => this.handlerSettingItemClick('CustomDeleteTag', { actionType: 'hot' }),
+                text: '移除热门标签',
+                leftIconName: 'delete',
+                rightIconName: 'chevron-right',
+                leftIconStyle: { color: state.theme },
+                rightIconStyle: { color: state.theme }
+              })}
 
-          {/* setting */}
-          <Text style={styles.menuTitle}>设置</Text>
-          {ViewUtil.renderListItem(() => this.handlerSettingItemClick(''),
-            'color-lens',
-            '自定义主题',
-            'chevron-right'
-          )}
-          {ViewUtil.renderListItem(() => this.handlerSettingItemClick(''),
-            'person',
-            '关于',
-            'chevron-right'
-          )}
-        </ScrollView>
-      </View>
+              {/* trending */}
+              <Text style={styles.menuTitle}>趋势管理</Text>
+              {ViewUtil.renderListItem({
+                callback: () => this.handlerSettingItemClick('CustomTag', { actionType: 'trending' }),
+                text: '自定义趋势标签',
+                leftIconName: 'list',
+                rightIconName: 'chevron-right',
+                leftIconStyle: { color: state.theme },
+                rightIconStyle: { color: state.theme }
+              })}
+              {ViewUtil.renderListItem({
+                callback: () => this.handlerSettingItemClick('CustomDeleteTag', { actionType: 'trending' }),
+                text: '移除趋势标签',
+                leftIconName: 'delete',
+                rightIconName: 'chevron-right',
+                leftIconStyle: { color: state.theme },
+                rightIconStyle: { color: state.theme }
+              })}
+
+              {/* setting */}
+              <Text style={styles.menuTitle}>设置</Text>
+              {ViewUtil.renderListItem({
+                callback: () => {
+                  this.setState({
+                    customThemeVisible: true
+                  });
+                },
+                text: '自定义主题',
+                leftIconName: 'color-lens',
+                rightIconName: 'chevron-right',
+                leftIconStyle: { color: state.theme },
+                rightIconStyle: { color: state.theme }
+              })}
+              {ViewUtil.renderListItem({
+                callback: () => this.handlerSettingItemClick('About'),
+                text: '关于',
+                leftIconName: 'person',
+                rightIconName: 'chevron-right',
+                leftIconStyle: { color: state.theme },
+                rightIconStyle: { color: state.theme }
+              })}
+            </ScrollView>
+            <CustomTheme
+              visible={state.customThemeVisible}
+              onClose={() => {
+                this.setState({
+                  customThemeVisible: false
+                });
+              }}
+            />
+          </View>
+        )
+        : null
     );
   };
 }

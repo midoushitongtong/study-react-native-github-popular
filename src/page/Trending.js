@@ -12,11 +12,11 @@ import {
 } from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Toast from 'react-native-easy-toast';
-import Feather from 'react-native-vector-icons/Feather';
-import { Dropdown } from 'react-native-material-dropdown';
 import TrendingTag from '../component/TrendingTag';
+import ViewUtil from '../util/ViewUtil';
+import ThemeConnect from '../core/ThemeConnect';
 
-export default class Trending extends React.Component {
+export default class Trending extends ThemeConnect {
   static navigationOptions = ({ navigation }) => ({
     headerTitle: (
       <View style={{ flex: 1 }}>
@@ -27,31 +27,45 @@ export default class Trending extends React.Component {
       <View/>
     ),
     headerRight: (
-      <View style={{ flex: 1 }}>
-        <TouchableOpacity
-          style={{ margin: 10 }}
-        >
-          {navigation.state.params && navigation.state.params.sinceList
+      <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+        {navigation.state.params && navigation.state.params.sinceList
+          ? (
+            ViewUtil.renderMoreMenu({
+              data: navigation.state.params.sinceList,
+              callback: (value, index) => {
+                navigation.state.params.changeSince(navigation.state.params.sinceList[index].value);
+              },
+              iconName: 'trending-down',
+              iconStyle: {
+                color: navigation.state.params && navigation.state.params.theme
+              }
+            })
+          )
+          : null}
+        <View style={{ flex: 1 }}>
+          {navigation.state.params && navigation.state.params.menuList
             ? (
-              <Dropdown
-                data={navigation.state.params.sinceList}
-                pickerStyle={{ width: 100 }}
-                dropdownOffset={{ top: 50, left: -60 }}
-                renderBase={() => (
-                  <Feather
-                    size={20}
-                    name="more-vertical"
-                    color="#000"
-                  />
-                )}
-                valueExtractor={(item) => item.name}
-                onChangeText={(value, index) => navigation.state.params.changeSince(navigation.state.params.sinceList[index].value)}
-              />
+              ViewUtil.renderMoreMenu({
+                data: navigation.state.params.menuList,
+                callback: (value, index) => {
+                  const urlInfo = navigation.state.params.menuList[index].value;
+                  navigation.push(urlInfo.page, urlInfo.params);
+                },
+                iconName: 'more-vertical',
+                pickerStyle: {
+                  width: 150
+                },
+                dropdownOffset: {
+                  left: -110
+                },
+                iconStyle: {
+                  color: navigation.state.params && navigation.state.params.theme
+                }
+              })
             )
             : null}
-        </TouchableOpacity>
+        </View>
       </View>
-
     ),
     headerTitleStyle: {
       flex: 1,
@@ -62,11 +76,37 @@ export default class Trending extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      menuList: [
+        {
+          value: {
+            page: 'CustomTag',
+            params: {
+              actionType: 'trending'
+            }
+          },
+          name: '自定义趋势标签'
+        },
+        {
+          value: {
+            page: 'CustomDeleteTag',
+            params: {
+              actionType: 'trending'
+            }
+          },
+          name: '移除趋势标签'
+        },
+        {
+          value: {
+            page: 'About'
+          },
+          name: '关于'
+        }
+      ],
       trendingTag: [],
       sinceList: [
         { value: 'daily', name: '今天' },
-        { value: 'weekly', name: '一星期' },
-        { value: 'monthly', name: '一个月' }
+        { value: 'weekly', name: '一星期内' },
+        { value: 'monthly', name: '一个月内' }
       ],
       since: 'daily'
     };
@@ -75,15 +115,12 @@ export default class Trending extends React.Component {
   componentDidMount = async () => {
     const { props, state } = this;
     props.navigation.setParams({
+      menuList: state.menuList,
       sinceList: state.sinceList,
       changeSince: this.changeSince
     });
-    const storageTrendingTag = await AsyncStorage.getItem('trendingTag');
-    this.setState({
-      trendingTag: storageTrendingTag !== null
-        ? JSON.parse(storageTrendingTag)
-        : require('../config/default_trending_tag')
-    });
+
+    await this.initTrendingTag();
 
     this.listener = DeviceEventEmitter.addListener('showToast', (text) => {
       this.refs['toast'].show(text, 500);
@@ -92,6 +129,15 @@ export default class Trending extends React.Component {
 
   componentWillUnmount = () => {
     this.listener && DeviceEventEmitter.removeListener(this.listener.remove());
+  };
+
+  initTrendingTag = async () => {
+    const storageRepositoryTag = await AsyncStorage.getItem('trendingTag');
+    this.setState({
+      trendingTag: storageRepositoryTag !== null
+        ? JSON.parse(storageRepositoryTag)
+        : require('../config/default_hot_tag')
+    });
   };
 
   // 改变日期排序, 刷新数据
@@ -107,7 +153,7 @@ export default class Trending extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollableTabView
-          tabBarBackgroundColor="#06f"
+          tabBarBackgroundColor={state.theme}
           tabBarInactiveTextColor="#fff"
           tabBarActiveTextColor="#fff"
           tabBarUnderlineStyle={{ backgroundColor: '#f9f9ff' }}
@@ -122,6 +168,7 @@ export default class Trending extends React.Component {
                 tabLabel={item.name}
                 path={item.path}
                 since={state.since}
+                iconColor={state.theme}
                 {...props}
               >{item.name}</TrendingTag>
             ))
@@ -129,9 +176,10 @@ export default class Trending extends React.Component {
         </ScrollableTabView>
         <Toast ref="toast" position="bottom" positionValue={200}/>
         <NavigationEvents
-          onDidFocus={() => {
-            if (this.refs['trendingTag']){
-              this.refs['trendingTag'].searchData()
+          onDidFocus={async () => {
+            if (this.refs['trendingTag']) {
+              await this.initTrendingTag();
+              this.refs['trendingTag'].searchData();
             }
           }}
         />

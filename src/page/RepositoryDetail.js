@@ -3,8 +3,9 @@ import { View, Button, TextInput, Text, TouchableOpacity, AsyncStorage } from 'r
 import { WebView } from 'react-native-webview';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import ThemeConnect from '../core/ThemeConnect';
 
-export default class RepositoryDetail extends React.Component {
+export default class RepositoryDetail extends ThemeConnect {
   static navigationOptions = ({ navigation }) => ({
     headerLeft: (
       <TouchableOpacity
@@ -26,7 +27,7 @@ export default class RepositoryDetail extends React.Component {
         <MaterialIcons
           name={navigation.state.params.isFavorite ? 'favorite' : 'favorite-border'}
           size={23}
-          color={navigation.state.params.isFavorite ? '#06f' : '#999'}
+          color={navigation.state.params.isFavorite ? navigation.state.params && navigation.state.params.theme : '#999'}
         />
       </TouchableOpacity>
     )

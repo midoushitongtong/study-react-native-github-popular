@@ -117,7 +117,7 @@ export default class RepositoryTab extends React.Component {
               <MaterialIcons
                 name={state.trendingCollection.findIndex(_item => _item.id === item.id) > -1 ? 'favorite' : 'favorite-border'}
                 size={23}
-                color={state.trendingCollection.findIndex(_item => _item.id === item.id) > -1 ? '#06f' : '#999'}
+                color={state.trendingCollection.findIndex(_item => _item.id === item.id) > -1 ? props.iconColor : '#999'}
               />
             </TouchableOpacity>
           </View>

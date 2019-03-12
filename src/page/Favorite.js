@@ -10,11 +10,12 @@ import {
   DeviceEventEmitter,
   TouchableOpacity
 } from 'react-native';
+import ThemeConnect from '../core/ThemeConnect';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import HotTag from '../component/HotTag';
 import TrendingTag from '../component/TrendingTag';
 
-export default class Favorite extends React.Component {
+export default class Favorite extends ThemeConnect {
   static navigationOptions = ({ navigation }) => ({
     headerTitle: (
       <View style={{ flex: 1 }}>
@@ -35,21 +36,16 @@ export default class Favorite extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
   }
 
-  componentDidMount = async () => {
-
-  };
-
   render = () => {
-    const { props } = this;
+    const { props, state } = this;
     return (
       <View style={styles.container}>
         <ScrollableTabView
           tabBarInactiveTextColor="#fff"
           tabBarActiveTextColor="#fff"
-          tabBarBackgroundColor="#06f"
+          tabBarBackgroundColor={state.theme}
           tabBarUnderlineStyle={{ backgroundColor: '#f9f9ff' }}
           renderTabBar={() => <ScrollableTabView.ScrollableTabBar/>}
         >
@@ -57,12 +53,14 @@ export default class Favorite extends React.Component {
             ref="hotTag"
             tabLabel="hot"
             actionType="favorite"
+            iconColor={state.theme}
             {...props}
           />
           <TrendingTag
             ref="trendingTag"
             tabLabel="trending"
             actionType="favorite"
+            iconColor={state.theme}
             {...props}
           />
         </ScrollableTabView>

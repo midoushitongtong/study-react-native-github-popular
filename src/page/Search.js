@@ -123,7 +123,7 @@ export default class extends React.Component {
     const { state } = this;
     const newHotTag = state.hotTag;
     newHotTag.unshift({
-      id: newHotTag.length,
+      id: newHotTag.length + 1,
       path: state.searchKeyword.toLowerCase(),
       name: state.searchKeyword,
       checked: true

@@ -14,8 +14,9 @@ import {
 import Parallax from '../component/Parallax';
 import ViewUtil from '../util/ViewUtil';
 import Toast from 'react-native-easy-toast';
+import ThemeConnect from '../core/ThemeConnect';
 
-export default class AboutAuthor extends React.Component {
+export default class AboutAuthor extends ThemeConnect {
   constructor(props) {
     super(props);
     this.state = {
@@ -91,30 +92,36 @@ export default class AboutAuthor extends React.Component {
             {state.menuList.map((item, index) => {
               return (
                 <View key={index}>
-                  {ViewUtil.renderListItem(
-                    () => {
+                  {ViewUtil.renderListItem({
+                    callback: () => {
                       state.menuList[index].showChildMenuList = !state.menuList[index].showChildMenuList;
                       this.setState({
                         menuList: state.menuList
                       });
                     },
-                    item.icon,
-                    item.name,
-                    item.showChildMenuList ? 'keyboard-arrow-up' : 'keyboard-arrow-down'
-                  )}
+                    text: item.name,
+                    leftIconName: item.icon,
+                    leftIconStyle: { color: state.theme },
+                    rightIconName: item.showChildMenuList ? 'keyboard-arrow-up' : 'keyboard-arrow-down',
+                    rightIconStyle: { color: state.theme }
+                  })}
                   {item.showChildMenuList ?
                     item.childMenuList.map((itemChild, indexChild) => {
                       return (
                         <View key={indexChild}>
-                          {ViewUtil.renderListItem(
-                            itemChild.callback,
-                            itemChild.leftIconName,
-                            itemChild.name,
-                            itemChild.rightIconName,
-                            { paddingLeft: 73 },
-                            {},
-                            {},
-                            { fontSize: 19, marginRight: 3 }
+                          {ViewUtil.renderListItem({
+                              callback: itemChild.callback,
+                              text: itemChild.name,
+                              leftIconName: itemChild.leftIconName,
+                              leftIconStyle: { color: state.theme },
+                              rightIconName: itemChild.rightIconName,
+                              containerStyle: {
+                                paddingLeft: 73
+                              },
+                              rightIconStyle: {
+                                fontSize: 19, marginRight: 3, color: state.theme
+                              }
+                            }
                           )}
                         </View>
                       );

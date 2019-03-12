@@ -2,8 +2,9 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, AsyncStorage, Alert, BackHandler } from 'react-native';
 import Checkbox from 'react-native-check-box';
 import Feather from 'react-native-vector-icons/Feather';
+import ThemeConnect from "../core/ThemeConnect";
 
-export default class CustomDeleteTag extends React.Component {
+export default class CustomDeleteTag extends ThemeConnect {
   static navigationOptions = ({ navigation, screenProps }) => ({
     headerLeft: (
       <TouchableOpacity
@@ -167,7 +168,7 @@ export default class CustomDeleteTag extends React.Component {
                   >
                     <Checkbox
                       style={{ width: '50%', padding: 10 }}
-                      checkedCheckBoxColor="#06f"
+                      checkedCheckBoxColor={state.theme}
                       isChecked={item.checked}
                       leftText={item.name}
                       onClick={() => {
@@ -184,7 +185,7 @@ export default class CustomDeleteTag extends React.Component {
                       index + 1 < state.tag.length
                         ? <Checkbox
                           style={{ flex: 1, padding: 10 }}
-                          checkedCheckBoxColor="#06f"
+                          checkedCheckBoxColor={state.theme}
                           isChecked={state.tag[index + 1].checked}
                           leftText={state.tag[index + 1].name}
                           onClick={() => {

@@ -25,6 +25,7 @@ export default class HotTag extends React.Component {
     this.setState({
       isLoading: true
     });
+
     const actionType = props.actionType;
     // 获取收藏的列表
     const hotCollection = await AsyncStorage.getItem('hotCollection');
@@ -38,7 +39,6 @@ export default class HotTag extends React.Component {
         // normal 需要获取仓库数据
         const url = `http://api.github.com/search/repositories?q=${props.path}&sort=starts`;
         const result = await api.selectHot(url);
-        console.log(result);
         // 是否取消搜索
         if (this.isCancelSearch) {
           this.setState({
@@ -137,7 +137,7 @@ export default class HotTag extends React.Component {
               <MaterialIcons
                 name={state.hotCollection.findIndex(_item => _item.id === item.id) > -1 ? 'favorite' : 'favorite-border'}
                 size={23}
-                color={state.hotCollection.findIndex(_item => _item.id === item.id) > -1 ? '#06f' : '#999'}
+                color={state.hotCollection.findIndex(_item => _item.id === item.id) > -1 ? props.iconColor : '#999'}
               />
             </TouchableOpacity>
           </View>

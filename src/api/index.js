@@ -21,12 +21,15 @@ export default {
       fetch(url)
         .then(response => response.json())
         .then(async result => {
+          if (result.items) {
+            result.items = result.items.splice(0, 3);
+          }
           // 缓存远程数据
           const localData = {
             updateTime: new Date().getTime() / 1000,
             data: result
           };
-          // await AsyncStorage.setItem('hot' + url, JSON.stringify(localData));
+          await AsyncStorage.setItem('hot' + url, JSON.stringify(localData));
           DeviceEventEmitter.emit('showToast', '缓存远程数据');
           resolve(localData.data);
         })
@@ -51,12 +54,15 @@ export default {
       // 从远程获取数据
       new GithubTrending().fetchTrending(url)
         .then(async result => {
+          if (result) {
+            result = result.splice(0, 3);
+          }
           // 缓存远程数据
           const localData = {
             updateTime: new Date().getTime() / 1000,
             data: result
           };
-          // await AsyncStorage.setItem('trending' + url, JSON.stringify(localData));
+          await AsyncStorage.setItem('trending' + url, JSON.stringify(localData));
           DeviceEventEmitter.emit('showToast', '缓存远程数据');
           resolve(localData.data);
         });
