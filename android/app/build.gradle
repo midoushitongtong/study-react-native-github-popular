@@ -73,10 +73,11 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "index.js"
+  entryFile: "index.js"
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -94,67 +95,83 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+  compileSdkVersion rootProject.ext.compileSdkVersion
+  buildToolsVersion rootProject.ext.buildToolsVersion
 
-    defaultConfig {
-        applicationId "com.p3"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+  defaultConfig {
+    applicationId "com.p3"
+    minSdkVersion rootProject.ext.minSdkVersion
+    targetSdkVersion rootProject.ext.targetSdkVersion
+    versionCode 1
+    versionName "1.0.0"
+  }
+  signingConfigs {
+    release {
+      storeFile file(MYAPP_RELEASE_STORE_FILE)
+      storePassword MYAPP_RELEASE_STORE_PASSWORD
+      keyAlias MYAPP_RELEASE_KEY_ALIAS
+      keyPassword MYAPP_RELEASE_KEY_PASSWORD
     }
-    signingConfigs {
-        release {
-          storeFile file(MYAPP_RELEASE_STORE_FILE)
-          storePassword MYAPP_RELEASE_STORE_PASSWORD
-          keyAlias MYAPP_RELEASE_KEY_ALIAS
-          keyPassword MYAPP_RELEASE_KEY_PASSWORD
-        }
+  }
+  splits {
+    abi {
+      reset()
+      enable enableSeparateBuildPerCPUArchitecture
+      universalApk false  // If true, also generate a universal APK
+      include "armeabi-v7a", "x86", "arm64-v8a"
     }
-    splits {
-        abi {
-            reset()
-            enable enableSeparateBuildPerCPUArchitecture
-            universalApk false  // If true, also generate a universal APK
-            include "armeabi-v7a", "x86", "arm64-v8a"
-        }
+  }
+  buildTypes {
+    release {
+      signingConfig signingConfigs.release
+      minifyEnabled enableProguardInReleaseBuilds
+      proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+      buildConfigField "String", "CODEPUSH_KEY", '"DCHfId9q76CDq1HEtpcXgK1vV6vZ678b611e-76ed-429e-b9dc-8c1ccd01f599"'
     }
-    buildTypes {
-        release {
-            signingConfig signingConfigs.release
-            minifyEnabled enableProguardInReleaseBuilds
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-        }
+    debug {
+      buildConfigField "String", "CODEPUSH_KEY", '"Gb85jqNOdAel2r0mEzBefe3ORn-T678b611e-76ed-429e-b9dc-8c1ccd01f599"'
     }
-    // applicationVariants are e.g. debug, release
-    applicationVariants.all { variant ->
-        variant.outputs.each { output ->
-            // For each separate APK per architecture, set a unique version code as described here:
-            // http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits
-            def versionCodes = ["armeabi-v7a":1, "x86":2, "arm64-v8a": 3]
-            def abi = output.getFilter(OutputFile.ABI)
-            if (abi != null) {  // null for the universal-debug, universal-release variants
-                output.versionCodeOverride =
-                        versionCodes.get(abi) * 1048576 + defaultConfig.versionCode
-            }
-        }
+  }
+  // applicationVariants are e.g. debug, release
+  applicationVariants.all { variant ->
+    variant.outputs.each { output ->
+      // For each separate APK per architecture, set a unique version code as described here:
+      // http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits
+      def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3]
+      def abi = output.getFilter(OutputFile.ABI)
+      if (abi != null) {  // null for the universal-debug, universal-release variants
+        output.versionCodeOverride =
+          versionCodes.get(abi) * 1048576 + defaultConfig.versionCode
+      }
     }
+  }
 }
 
 dependencies {
-    implementation project(':react-native-webview')
-    implementation project(':react-native-gesture-handler')
-    implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
-    implementation "com.facebook.react:react-native:+"  // From node_modules
+  implementation project(':react-native-code-push')
+  implementation project(':react-native-splash-screen')
+  implementation project(':react-native-webview')
+  implementation project(':react-native-gesture-handler')
+  implementation fileTree(include: ['*.jar'], dir: 'libs')
+  implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+  implementation 'com.facebook.react:react-native:+'
+  // From node_modules
+  implementation files('libs/umeng-common-2.0.1.jar')
+  implementation files('libs/umeng-share-core-6.9.3.jar')
+  implementation files('libs/umeng-share-QQ-simplify-6.9.3.jar')
+  implementation files('libs/umeng-share-sina-simplify-6.9.3.jar')
+  implementation files('libs/umeng-share-wechat-simplify-6.9.3.jar')
+  implementation files('libs/umeng-shareboard-widget-6.9.3.jar')
+  implementation files('libs/umeng-sharetool-6.9.3.jar')
+  //
+  implementation project(':react-native-splash-screen')
 }
 
 // Run this once to be able to run the application with BUCK
 // puts all compile dependencies into folder libs for BUCK to use
 task copyDownloadableDepsToLibs(type: Copy) {
-    from configurations.compile
-    into 'libs'
+  from configurations.compile
+  into 'libs'
 }
 
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"

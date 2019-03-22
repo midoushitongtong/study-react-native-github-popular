@@ -8,14 +8,18 @@ import {
   Button,
   AsyncStorage,
   TouchableOpacity,
-  DeviceEventEmitter
+  DeviceEventEmitter,
+  NativeModules,
+  Alert
 } from 'react-native';
+import SplashScreen from 'react-native-splash-screen';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Toast from 'react-native-easy-toast';
 import HotTag from '../component/HotTag';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ViewUtil from '../util/ViewUtil';
 import ThemeConnect from '../core/ThemeConnect';
+import ShareUtil from '../util/ShareUtil';
 
 export default class Hot extends ThemeConnect {
   static navigationOptions = ({ navigation }) => ({
@@ -41,7 +45,11 @@ export default class Hot extends ThemeConnect {
                 data: navigation.state.params.menuList,
                 callback: (value, index) => {
                   const urlInfo = navigation.state.params.menuList[index].value;
-                  navigation.push(urlInfo.page, urlInfo.params);
+                  if (urlInfo) {
+                    navigation.push(urlInfo.page, urlInfo.params);
+                  } else {
+                    navigation.state.params.menuList[index].callback();
+                  }
                 },
                 iconName: 'more-vertical',
                 pickerStyle: {
@@ -89,12 +97,29 @@ export default class Hot extends ThemeConnect {
             page: 'About'
           },
           name: '关于'
+        },
+        {
+          name: '分享',
+          callback: () => {
+            ShareUtil.shareboard(
+              'text',
+              'https://resource.byn2.top/wap/img/cate-new.png',
+              'http://baidu.com',
+              'title',
+              [0, 1, 2, 3, 4],
+              (code, message) => {
+                Alert.alert('title', 'msg: message');
+              }
+            );
+          }
         }
       ]
     };
   }
 
   componentDidMount = async () => {
+    SplashScreen.hide();
+
     const { props, state } = this;
     props.navigation.setParams({
       menuList: state.menuList
@@ -107,6 +132,12 @@ export default class Hot extends ThemeConnect {
     });
   };
 
+  componentWillUnmount = () => {
+    if (this.listener) {
+      DeviceEventEmitter.removeListener(this.listener.remove());
+    }
+  };
+
   initHotTag = async () => {
     const storageRepositoryTag = await AsyncStorage.getItem('hotTag');
     this.setState({
@@ -114,12 +145,6 @@ export default class Hot extends ThemeConnect {
         ? JSON.parse(storageRepositoryTag)
         : require('../config/default_hot_tag')
     });
-  };
-
-  componentWillUnmount = () => {
-    if (this.listener) {
-      DeviceEventEmitter.removeListener(this.listener.remove());
-    }
   };
 
   render = () => {

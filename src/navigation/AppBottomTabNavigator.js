@@ -9,6 +9,11 @@ import My from '../page/My';
 import Favorite from '../page/Favorite';
 import ThemeConnect from '../core/ThemeConnect';
 
+/**
+ * 单独封装 BottomTabBar 组件
+ * 主要用于主题切换，能够改变颜色
+ *
+ */
 class TabBarComponentForThemeConnect extends ThemeConnect {
   render = () => {
     return <BottomTabBar {...this.props} activeTintColor={this.state.theme}/>;

@@ -3,6 +3,7 @@ import { View, Button, ScrollView, TouchableHighlight, StyleSheet, Text, DeviceE
 import CustomTheme from './CustomTheme';
 import ViewUtil from '../util/ViewUtil';
 import ThemeConnect from '../core/ThemeConnect';
+import codePush from 'react-native-code-push';
 
 export default class My extends ThemeConnect {
   static navigationOptions = () => ({
@@ -32,6 +33,20 @@ export default class My extends ThemeConnect {
   handlerSettingItemClick = (path, params) => {
     const { props } = this;
     props.navigation.push(path, params);
+  };
+
+  handlerCheckUpdate = () => {
+    codePush.sync({
+      updateDialog: {
+        appendReleaseDescription: true,
+        descriptionPrefix: '更新内容',
+        title: '更新',
+        optionalUpdateMessage: '有新的更新可用',
+        optionalInstallButtonLabel: '更新',
+        optionalIgnoreButtonLabel: '取消'
+      },
+      installMode: codePush.InstallMode.IMMEDIATE
+    });
   };
 
   render = () => {
@@ -112,6 +127,19 @@ export default class My extends ThemeConnect {
                 leftIconStyle: { color: state.theme },
                 rightIconStyle: { color: state.theme }
               })}
+
+              <Text style={styles.menuTitle}>关于</Text>
+              {ViewUtil.renderListItem({
+                callback: () => this.handlerCheckUpdate(),
+                text: '检查更新',
+                leftIconName: 'person',
+                rightIconName: 'chevron-right',
+                leftIconStyle: { color: state.theme },
+                rightIconStyle: { color: state.theme }
+              })}
+              <Button
+                title="222333"
+              />
             </ScrollView>
             <CustomTheme
               visible={state.customThemeVisible}
