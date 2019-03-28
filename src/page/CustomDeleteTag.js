@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, AsyncStorage, Alert, BackHandler } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert, BackHandler } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import Checkbox from 'react-native-check-box';
 import Feather from 'react-native-vector-icons/Feather';
 import ThemeConnect from "../core/ThemeConnect";

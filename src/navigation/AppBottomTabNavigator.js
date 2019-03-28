@@ -30,7 +30,7 @@ export default createBottomTabNavigator({
       tabBarIcon: ({ tintColor, focused }) => (
         <FontAwesome5
           size={20}
-          name="hotjar"
+          name="ad"
           style={{ color: tintColor }}
         />
       )

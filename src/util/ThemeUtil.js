@@ -1,4 +1,5 @@
-import { AsyncStorage, DeviceEventEmitter } from 'react-native';
+import { DeviceEventEmitter } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import AppTheme from '../config/app_theme';
 
 export default {

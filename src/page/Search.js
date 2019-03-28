@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Button, TextInput, TouchableOpacity, ScrollView, StyleSheet, AsyncStorage } from 'react-native';
+import { View, Text, Button, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import Feather from 'react-native-vector-icons/Feather';
 import Toast from 'react-native-easy-toast';
 import HotTag from '../component/HotTag';

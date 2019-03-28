@@ -2,7 +2,6 @@ import React from 'react';
 import {
   View,
   Text,
-  AsyncStorage,
   Platform,
   StyleSheet,
   Animated,
@@ -11,6 +10,7 @@ import {
   BackHandler,
   TouchableOpacity
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import SortableList from 'react-native-sortable-list';
 import Checkbox from 'react-native-check-box';
 import Feather from 'react-native-vector-icons/Feather';

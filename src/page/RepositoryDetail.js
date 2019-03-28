@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Button, TextInput, Text, TouchableOpacity, AsyncStorage } from 'react-native';
+import { View, Button, TextInput, Text, TouchableOpacity } from 'react-native';
 import { WebView } from 'react-native-webview';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';

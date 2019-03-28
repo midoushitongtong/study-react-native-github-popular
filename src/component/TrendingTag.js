@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, RefreshControl, AsyncStorage } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, RefreshControl } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import api from '../api';
 

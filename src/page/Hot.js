@@ -6,12 +6,12 @@ import {
   StyleSheet,
   TextInput,
   Button,
-  AsyncStorage,
   TouchableOpacity,
   DeviceEventEmitter,
   NativeModules,
   Alert
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import SplashScreen from 'react-native-splash-screen';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Toast from 'react-native-easy-toast';

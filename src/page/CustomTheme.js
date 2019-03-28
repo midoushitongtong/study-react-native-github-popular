@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Modal, Alert, StyleSheet, ScrollView, AsyncStorage, TouchableHighlight } from 'react-native';
+import { View, Text, Modal, Alert, StyleSheet, ScrollView, TouchableHighlight } from 'react-native';
 import AppTheme from '../config/app_theme';
 import ThemeUtil from '../util/ThemeUtil';
 
