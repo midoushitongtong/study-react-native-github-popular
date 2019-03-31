@@ -6,15 +6,16 @@ import {
   StyleSheet,
   Button,
   TextInput,
-  AsyncStorage,
   DeviceEventEmitter,
   TouchableOpacity
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Toast from 'react-native-easy-toast';
 import TrendingTag from '../component/TrendingTag';
 import ViewUtil from '../util/ViewUtil';
 import ThemeConnect from '../core/ThemeConnect';
+import MenuDialog from "../component/MenuDialog";
 
 export default class Trending extends ThemeConnect {
   static navigationOptions = ({ navigation }) => ({
@@ -30,38 +31,28 @@ export default class Trending extends ThemeConnect {
       <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
         {navigation.state.params && navigation.state.params.sinceList
           ? (
-            ViewUtil.renderMoreMenu({
-              data: navigation.state.params.sinceList,
-              callback: (value, index) => {
+            <MenuDialog
+              iconName="trending-down"
+              iconColor={navigation.state.params.theme}
+              menuList={navigation.state.params.sinceList}
+              callback={(index) => {
                 navigation.state.params.changeSince(navigation.state.params.sinceList[index].value);
-              },
-              iconName: 'trending-down',
-              iconStyle: {
-                color: navigation.state.params && navigation.state.params.theme
-              }
-            })
+              }}
+            />
           )
           : null}
         <View style={{ flex: 1 }}>
           {navigation.state.params && navigation.state.params.menuList
             ? (
-              ViewUtil.renderMoreMenu({
-                data: navigation.state.params.menuList,
-                callback: (value, index) => {
+              <MenuDialog
+                iconName='more-vertical'
+                iconColor={navigation.state.params.theme}
+                menuList={navigation.state.params.menuList}
+                callback={(index) => {
                   const urlInfo = navigation.state.params.menuList[index].value;
                   navigation.push(urlInfo.page, urlInfo.params);
-                },
-                iconName: 'more-vertical',
-                pickerStyle: {
-                  width: 150
-                },
-                dropdownOffset: {
-                  left: -110
-                },
-                iconStyle: {
-                  color: navigation.state.params && navigation.state.params.theme
-                }
-              })
+                }}
+              />
             )
             : null}
         </View>
